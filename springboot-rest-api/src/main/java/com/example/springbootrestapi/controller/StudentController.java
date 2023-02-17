@@ -3,6 +3,7 @@ package com.example.springbootrestapi.controller;
 import com.example.springbootrestapi.bean.Student;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -30,13 +31,26 @@ public class StudentController {
     //Path variable in a rest API
     //{id} URI template variable
     //http://localhost:8080/student/1
-    @GetMapping("student/{id}")
+    @GetMapping("students/{id}")
     public Student getStudent(@PathVariable int id){
         return new Student(id,"Mohan", "R");
     }
-    @GetMapping("student/{id}/{first-name}/{last-name}")
+    @GetMapping("students/{id}/{first-name}/{last-name}")
     public Student getStudentWithMultiplePathVariable(@PathVariable int id, @PathVariable("first-name") String firstName,
                               @PathVariable("last-name") String lastName){
+        return new Student(id,firstName, lastName);
+    }
+
+    //http://localhost:8080/students/query?id=1
+    @GetMapping("students/query")
+    public Student StudentWithRequestParam(@RequestParam int id){
+        return new Student(id,"Mohan", "R");
+    }
+
+    //http://localhost:8080/students/queryMultiple?id=1&firstName=Siva&lastName=Karthikeyan
+    @GetMapping("students/queryMultiple")
+    public Student StudentWithMultipleRequestParam(@RequestParam int id, @RequestParam String firstName,
+                                                   @RequestParam String lastName){
         return new Student(id,firstName, lastName);
     }
 }
