@@ -2,6 +2,7 @@ package com.example.springbootrestapi.controller;
 
 import com.example.springbootrestapi.bean.Student;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -10,20 +11,23 @@ import java.util.List;
 @RestController
 public class StudentController {
     @GetMapping("student")
-    public Student createStudent(){
+    public ResponseEntity<Student> createStudent(){
         Student student = new Student(1,"Mohan", "R");
-        return student;
+        //return ResponseEntity.ok(student);
+        return ResponseEntity.ok()
+                .header("Custom-header","Mohan")
+                .body(student);
     }
 
     @GetMapping("students")
-    public List<Student> getStudents(){
+    public ResponseEntity<List<Student>> getStudents(){
         List<Student> students = new ArrayList<Student>();
         students.add(new Student(1,"Mohan", "R"));
         students.add(new Student(2,"Bala", "JI"));
         students.add(new Student(3,"Raja", "Velu"));
         students.add(new Student(4,"Rajini", "Kanth"));
         students.add(new Student(5,"Siva", "karthikeyan"));
-        return students;
+        return ResponseEntity.ok(students);
     }
 
     //Path variable in a rest API
@@ -34,43 +38,43 @@ public class StudentController {
         return new Student(id,"Mohan", "R");
     }
     @GetMapping("students/{id}/{first-name}/{last-name}")
-    public Student getStudentWithMultiplePathVariable(@PathVariable int id, @PathVariable("first-name") String firstName,
+    public ResponseEntity<Student> getStudentWithMultiplePathVariable(@PathVariable int id, @PathVariable("first-name") String firstName,
                               @PathVariable("last-name") String lastName){
-        return new Student(id,firstName, lastName);
+        return ResponseEntity.ok(new Student(id,firstName, lastName));
     }
 
     //http://localhost:8080/students/query?id=1
     @GetMapping("students/query")
-    public Student StudentWithRequestParam(@RequestParam int id){
-        return new Student(id,"Mohan", "R");
+    public ResponseEntity<Student> StudentWithRequestParam(@RequestParam int id){
+        return ResponseEntity.ok(new Student(id,"Mohan", "R"));
     }
 
     //http://localhost:8080/students/queryMultiple?id=1&firstName=Siva&lastName=Karthikeyan
     @GetMapping("students/queryMultiple")
-    public Student StudentWithMultipleRequestParam(@RequestParam int id, @RequestParam String firstName,
+    public ResponseEntity<Student> StudentWithMultipleRequestParam(@RequestParam int id, @RequestParam String firstName,
                                                    @RequestParam String lastName){
-        return new Student(id,firstName, lastName);
+        return ResponseEntity.ok(new Student(id,firstName, lastName));
     }
 
     @PostMapping("students/create")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Student createStudent(@RequestBody Student student){
+    //@ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Student> createStudent(@RequestBody Student student){
         System.out.println(student.getId());
         System.out.println(student.getFirstName());
         System.out.println(student.getLastName());
-        return student;
+        return new ResponseEntity<>(student, HttpStatus.CREATED);
     }
 
     @PutMapping("students/{id}/update")
-    public Student updateStudent(@RequestBody Student student, @PathVariable("id") int studentId){
+    public ResponseEntity<Student> updateStudent(@RequestBody Student student, @PathVariable("id") int studentId){
         System.out.println(student.getFirstName());
         System.out.println(student.getLastName());
-        return student;
+        return ResponseEntity.ok(student);
     }
 
 @DeleteMapping("students/{id}/delete")
-    public String deleteStudent(@PathVariable("id") int studentId){
+    public ResponseEntity<String> deleteStudent(@PathVariable("id") int studentId){
         System.out.println(studentId);
-        return "Delete Successful for" + studentId;
+        return ResponseEntity.ok("Delete Successful for" + studentId);
     }
 }
